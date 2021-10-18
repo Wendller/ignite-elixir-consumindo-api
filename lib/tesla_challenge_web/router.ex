@@ -5,8 +5,19 @@ defmodule TeslaChallengeWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug TeslaChallengeWeb.Auth.Pipeline
+  end
+
   scope "/api", TeslaChallengeWeb do
     pipe_through :api
+
+    post "/users", UsersController, :create
+    post "/users/signin", UsersController, :sign_in
+  end
+
+  scope "/api", TeslaChallengeWeb do
+    pipe_through [:api, :auth]
 
     get "/repos/:user", ReposController, :show
   end

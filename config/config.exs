@@ -10,6 +10,16 @@ import Config
 config :tesla_challenge,
   ecto_repos: [TeslaChallenge.Repo]
 
+config :tesla_challenge, TeslaChallenge.Repo, migration_primary_key: [type: :binary_id]
+
+config :tesla_challenge, TeslaChallengeWeb.Auth.Guardian,
+  issuer: "tesla_challenge",
+  secret_key: "1hPdG2YrGzLzFPC+6EIe9RUERF3HW4DxZ6kCe1UzfpmLy3oiqLLXG1sMr1H5yXMu"
+
+config :tesla_challenge, TeslaChallengeWeb.Auth.Pipeline,
+  module: TeslaChallengeWeb.Auth.Guardian,
+  error_handler: TeslaChallengeWeb.Auth.ErrorHandler
+
 # Configures the endpoint
 config :tesla_challenge, TeslaChallengeWeb.Endpoint,
   url: [host: "localhost"],
