@@ -9,7 +9,11 @@ defmodule TeslaChallengeWeb.UsersController do
 
   def create(connection, params) do
     with {:ok, %User{} = user} <- TeslaChallenge.Users.Create.call(params),
-         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
+         {:ok, token, _claims} <-
+           Guardian.encode_and_sign(user, %{},
+             ttl: {1, :minute},
+             token_type: "refresh"
+           ) do
       connection
       |> put_status(:created)
       |> render("create.json", token: token, user: user)

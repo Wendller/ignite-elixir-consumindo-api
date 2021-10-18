@@ -19,7 +19,13 @@ defmodule TeslaChallengeWeb.Auth.Guardian do
   def authenticate(%{"id" => user_id, "password" => password} = _params) do
     with %User{password_hash: password_hash} = user <- Repo.get(User, user_id),
          true <- Pbkdf2.verify_pass(password, password_hash),
-         {:ok, token, _claims} <- encode_and_sign(user) do
+         {:ok, token, _claims} <-
+           encode_and_sign(
+             user,
+             %{},
+             ttl: {1, :minute},
+             token_type: "refresh"
+           ) do
       {:ok, token}
     else
       false -> {:error, Error.build(:unauthorized, "Please verify your credentials")}
